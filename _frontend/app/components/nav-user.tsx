@@ -84,9 +84,16 @@ export function NavUser({
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
-								<User />
-								Account
+							<DropdownMenuItem asChild>
+								<a
+									href="https://github.com/rohan-soni-zen"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="flex items-center gap-2"
+								>
+									<User />
+									Github
+								</a>
 							</DropdownMenuItem>
 							<DropdownMenuItem>
 								<CreditCard />
