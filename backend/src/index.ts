@@ -1,3 +1,4 @@
+import * as path from "path";
 import { validate } from "class-validator";
 import * as express from "express";
 import { Request, Response } from "express";
@@ -18,6 +19,16 @@ AppDataSource.initialize()
 	})
 	.catch(error => console.error(error));
 
+app.use(express.static(path.join(__dirname, "../build/client")));
+
+app.get("/", (req: Request, res: Response) => {
+	res.sendFile(path.join(__dirname, "../build/client/index.html"));
+});
+
+app.get("/not-found", (req: Request, res: Response) => {
+	res.sendFile(path.join(__dirname, "../build/client/index.html"));
+});
+
 app.get("/:alias", async (req: Request, res: Response): Promise<void> => {
 	try {
 		const url = await AppDataSource.getRepository(URL).findOneBy({
@@ -25,7 +36,7 @@ app.get("/:alias", async (req: Request, res: Response): Promise<void> => {
 		});
 
 		if (!url) {
-			res.status(404).json({ error: "URL not found" });
+			res.redirect(302, "/not-found");
 			return;
 		}
 
