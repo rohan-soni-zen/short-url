@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: short-url-backend
+    labels:
+        app: short-url-backend
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: short-url-backend
+    template:
+        metadata:
+            labels:
+                app: short-url-backend
+        spec:
+            containers:
+                - name: short-url-backend
+                  image: abacus1234/short-url-backend:latest
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                      - containerPort: 3000
+                  env:
+                      - name: NODE_ENV
+                        value: "production"
+                      - name: PORT
+                        value: "3000"
+                      - name: DB_HOST
+                        valueFrom:
+                            secretKeyRef:
+                                name: db-secret
+                                key: host
+                      - name: DB_PORT
+                        valueFrom:
+                            secretKeyRef:
+                                name: db-secret
+                                key: port
+                      - name: DB_USERNAME
+                        valueFrom:
+                            secretKeyRef:
+                                name: db-secret
+                                key: username
+                      - name: DB_PASSWORD
+                        valueFrom:
+                            secretKeyRef:
+                                name: db-secret
+                                key: password
+                      - name: DB_DATABASE
+                        valueFrom:
+                            secretKeyRef:
+                                name: db-secret
+                                key: database
+                  resources:
+                      requests:
+                          memory: "128Mi"
+                          cpu: "100m"
+                      limits:
+                          memory: "512Mi"
+                          cpu: "500m"
+                  livenessProbe:
+                      httpGet:
+                          path: /stats/url/1
+                          port: 3000
+                      initialDelaySeconds: 30
+                      periodSeconds: 10
+                  readinessProbe:
+                      httpGet:
+                          path: /stats/url/1
+                          port: 3000
+                      initialDelaySeconds: 5
+                      periodSeconds: 5
+                - name: mysql
+                  image: mysql:latest
+                  imagePullPolicy: IfNotPresent
+                  ports:
+                      - containerPort: 3306
+                  env:
+                      - name: MYSQL_ROOT_PASSWORD
+                        valueFrom:
+                            secretKeyRef:
+                                name: db-secret
+                                key: password
+                      - name: MYSQL_DATABASE
+                        valueFrom:
+                            secretKeyRef:
+                                name: db-secret
+                                key: database
+                      - name: MYSQL_USER
+                        valueFrom:
+                            secretKeyRef:
+                                name: db-secret
+                                key: username
+                      - name: MYSQL_PASSWORD
+                        valueFrom:
+                            secretKeyRef:
+                                name: db-secret
+                                key: password
+                  resources:
+                      requests:
+                          memory: "256Mi"
+                          cpu: "100m"
+                      limits:
+                          memory: "512Mi"
+                          cpu: "500m"
+                  volumeMounts:
+                      - name: mysql-data
+                        mountPath: /var/lib/mysql
+            volumes:
+                - name: mysql-data
+                  emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: short-url-service
+spec:
+    selector:
+        app: short-url-backend
+    ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 3000
+          nodePort: 30080
+    type: NodePort
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: db-secret
+type: Opaque
+data:
+    host: bG9jYWxob3N0
+    port: MzMwNg==
+    username: dGVzdA==
+    password: dGVzdA==
+    database: dGVzdA==
