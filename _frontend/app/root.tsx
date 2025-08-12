@@ -7,14 +7,20 @@ import {
 	ScrollRestoration,
 } from "react-router";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import { useLocalStorage } from "usehooks-ts";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { AppSidebar } from "./components/app-sidebar";
 import { SiteHeader } from "./components/site-header";
 import { ThemeProvider } from "./components/theme-provider";
+import { GlobalHotkeys } from "./components/global-hotkeys";
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar";
-import { useLocalStorage } from "usehooks-ts";
+import { AuthProvider } from "./contexts/AuthContext";
+import { AuthModalProvider } from "./contexts/AuthModalContext";
+import { QuickCreateProvider } from "./contexts/QuickCreateContext";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 interface RecentEntry {
 	alias: string;
@@ -56,20 +62,38 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	);
 }
 
+const queryClient = new QueryClient();
+
 export default function App() {
 	const [recents, setRecents] = useLocalStorage<RecentEntry[]>("recents", []);
 
 	return (
-		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-			<SidebarProvider>
-				<AppSidebar variant="inset" setRecents={setRecents} />
-				<SidebarInset>
-					<SiteHeader />
-					<Outlet context={{ recents, setRecents }} />
-				</SidebarInset>
-			</SidebarProvider>
-			<Toaster position="top-center" />
-		</ThemeProvider>
+		<QueryClientProvider client={queryClient}>
+			<AuthProvider>
+				<AuthModalProvider>
+					<QuickCreateProvider>
+						<ThemeProvider
+							defaultTheme="dark"
+							storageKey="vite-ui-theme"
+						>
+							<GlobalHotkeys />
+							<SidebarProvider>
+								<AppSidebar
+									variant="inset"
+									setRecents={setRecents}
+								/>
+								<SidebarInset>
+									<SiteHeader />
+									<Outlet context={{ recents, setRecents }} />
+								</SidebarInset>
+							</SidebarProvider>
+							<Toaster position="top-center" />
+						</ThemeProvider>
+					</QuickCreateProvider>
+				</AuthModalProvider>
+			</AuthProvider>
+			<ReactQueryDevtools />
+		</QueryClientProvider>
 	);
 }
 
