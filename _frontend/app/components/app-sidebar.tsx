@@ -1,10 +1,7 @@
 import {
 	BookOpen,
 	ChartSpline,
-	HelpCircleIcon,
 	Home,
-	Search,
-	Settings,
 	Zap,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
@@ -27,11 +24,6 @@ import {
 } from "./ui/sidebar";
 
 const data = {
-	user: {
-		name: "Rohan Sony",
-		email: "rohansony8873@gmail.com",
-		avatar: "/avatars/shadcn.jpg",
-	},
 	navMain: [
 		{
 			title: "Home",
@@ -49,23 +41,7 @@ const data = {
 			icon: BookOpen,
 		},
 	],
-	navSecondary: [
-		{
-			title: "Settings",
-			url: "/settings",
-			icon: Settings,
-		},
-		{
-			title: "Get Help",
-			url: "/help",
-			icon: HelpCircleIcon,
-		},
-		{
-			title: "Search",
-			url: "/search",
-			icon: Search,
-		},
-	],
+	navSecondary: [],
 };
 
 export function AppSidebar({
@@ -98,7 +74,7 @@ export function AppSidebar({
 				<NavSecondary items={data.navSecondary} className="mt-auto" />
 			</SidebarContent>
 			<SidebarFooter>
-				<NavUser user={data.user} />
+				<NavUser />
 			</SidebarFooter>
 		</Sidebar>
 	);

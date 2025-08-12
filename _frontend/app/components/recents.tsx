@@ -1,7 +1,7 @@
 import { cn } from "~/lib/utils";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
-import { Copy, ExternalLink } from "lucide-react";
+import { Copy, ExternalLink, Trash2 } from "lucide-react";
 
 interface RecentEntry {
 	alias: string;
@@ -11,12 +11,42 @@ interface RecentEntry {
 
 interface RecentsProps extends React.ComponentPropsWithoutRef<"div"> {
 	recents: RecentEntry[];
+	setRecents?: React.Dispatch<React.SetStateAction<RecentEntry[]>>;
+	clearRecent?: () => void;
 }
 
-const Recents = ({ className, recents, ...props }: RecentsProps) => {
+const Recents = ({
+	className,
+	recents,
+	setRecents,
+	clearRecent,
+	...props
+}: RecentsProps) => {
+	const handleClearAll = () => {
+		if (setRecents) {
+			setRecents([]);
+		}
+		if (clearRecent) {
+			clearRecent();
+		}
+	};
+
 	return (
 		<div className={cn("flex flex-col gap-6 h-full", className)} {...props}>
-			<span className="text-xl font-extralight">Recents</span>
+			<div className="flex items-center justify-between">
+				<span className="text-xl font-extralight">Recents</span>
+				{recents.length > 0 && setRecents && (
+					<Button
+						onClick={handleClearAll}
+						variant="outline"
+						size="sm"
+						className="gap-2 text-muted-foreground hover:text-destructive"
+					>
+						<Trash2 className="h-4 w-4" />
+						Clear All
+					</Button>
+				)}
+			</div>
 			<div className="space-y-4 overflow-y-scroll max-h-[calc(100vh-200px)] flex-1 sticky top-0">
 				{recents.length === 0 ? (
 					<p className="text-muted-foreground">No recent URLs</p>

@@ -1,5 +1,5 @@
-import { MoreVertical, User, CreditCard, Bell, LogOut } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { MoreVertical, User, LogOut } from "lucide-react";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -15,17 +15,38 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "./ui/sidebar";
+import { useAuth } from "~/contexts/AuthContext";
+import { LoginForm } from "./login-form";
+import { RegisterForm } from "./register-form";
 
-export function NavUser({
-	user,
-}: {
-	user: {
-		name: string;
-		email: string;
-		avatar: string;
-	};
-}) {
+export function NavUser() {
+	const { user, isAuthenticated, logout } = useAuth();
 	const { isMobile } = useSidebar();
+
+	// If user is not authenticated, show login and register forms
+	if (!isAuthenticated || !user) {
+		return (
+			<SidebarMenu>
+				<SidebarMenuItem>
+					<div className="flex flex-col gap-2 w-full">
+						<LoginForm />
+						<RegisterForm />
+					</div>
+				</SidebarMenuItem>
+			</SidebarMenu>
+		);
+	}
+
+	// Get user initials for fallback avatar
+	const getInitials = (name: string) => {
+		return name
+			.split(" ")
+			.map(n => n[0])
+			.join("")
+			.toUpperCase()
+			.slice(0, 2);
+	};
+
 	return (
 		<SidebarMenu>
 			<SidebarMenuItem>
@@ -35,13 +56,9 @@ export function NavUser({
 							size="lg"
 							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						>
-							<Avatar className="h-8 w-8 rounded-lg grayscale">
-								<AvatarImage
-									src={user.avatar}
-									alt={user.name}
-								/>
-								<AvatarFallback className="rounded-lg">
-									RS
+							<Avatar className="h-8 w-8 rounded-lg">
+								<AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
+									{getInitials(user.name)}
 								</AvatarFallback>
 							</Avatar>
 							<div className="grid flex-1 text-left text-sm leading-tight">
@@ -64,12 +81,8 @@ export function NavUser({
 						<DropdownMenuLabel className="p-0 font-normal">
 							<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 								<Avatar className="h-8 w-8 rounded-lg">
-									<AvatarImage
-										src={user.avatar}
-										alt={user.name}
-									/>
-									<AvatarFallback className="rounded-lg">
-										RS
+									<AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
+										{getInitials(user.name)}
 									</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
@@ -83,29 +96,7 @@ export function NavUser({
 							</div>
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
-							<DropdownMenuItem asChild>
-								<a
-									href="https://github.com/rohan-soni-zen"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="flex items-center gap-2"
-								>
-									<User />
-									Github
-								</a>
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<CreditCard />
-								Billing
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Bell />
-								Notifications
-							</DropdownMenuItem>
-						</DropdownMenuGroup>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem>
+						<DropdownMenuItem onClick={logout} variant="destructive">
 							<LogOut />
 							Log out
 						</DropdownMenuItem>
