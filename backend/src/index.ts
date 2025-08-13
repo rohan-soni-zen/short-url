@@ -37,7 +37,7 @@ app.get("/:alias", async (req: Request, res: Response): Promise<void> => {
 
 		if (!url) {
 			console.log(`URL not found for alias: ${req.params.alias}`);
-			res.redirect("/not-found");
+			res.sendFile(path.join(__dirname, "../build/client/index.html"));
 			return;
 		}
 
