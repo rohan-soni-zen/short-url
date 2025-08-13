@@ -1,4 +1,4 @@
-import { Github } from "lucide-react";
+import { Github, BookOpen } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
