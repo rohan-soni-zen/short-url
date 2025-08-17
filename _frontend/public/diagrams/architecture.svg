@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" style="font-family: Inter, system-ui, sans-serif;">
+  <defs>
+    <style>
+      .node { fill: #f3f4f6; stroke: #6b7280; stroke-width: 2; }
+      .frontend { fill: #dbeafe; stroke: #3b82f6; }
+      .backend { fill: #fef3c7; stroke: #f59e0b; }
+      .database { fill: #dcfce7; stroke: #10b981; }
+      .label { font-size: 14px; font-weight: 500; text-anchor: middle; }
+      .title { font-size: 16px; font-weight: 600; text-anchor: middle; }
+      .arrow { stroke: #6b7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280" />
+    </marker>
+  </defs>
+  
+  <!-- Frontend Group -->
+  <rect x="50" y="50" width="300" height="400" rx="8" class="frontend" opacity="0.3"/>
+  <text x="200" y="80" class="title" fill="#1e40af">Frontend (React)</text>
+  
+  <rect x="70" y="100" width="120" height="60" rx="6" class="node"/>
+  <text x="130" y="135" class="label">User Browser</text>
+  
+  <rect x="70" y="180" width="120" height="60" rx="6" class="node"/>
+  <text x="130" y="215" class="label">React Router</text>
+  
+  <rect x="70" y="260" width="120" height="60" rx="6" class="node"/>
+  <text x="130" y="295" class="label">Home Route</text>
+  
+  <rect x="70" y="340" width="120" height="60" rx="6" class="node"/>
+  <text x="130" y="375" class="label">URL Form</text>
+  
+  <rect x="220" y="100" width="120" height="60" rx="6" class="node"/>
+  <text x="280" y="135" class="label">Stats Route</text>
+  
+  <rect x="220" y="180" width="120" height="60" rx="6" class="node"/>
+  <text x="280" y="215" class="label">Auth Routes</text>
+  
+  <rect x="220" y="260" width="120" height="60" rx="6" class="node"/>
+  <text x="280" y="295" class="label">Charts &amp; Tables</text>
+  
+  <rect x="220" y="340" width="120" height="60" rx="6" class="node"/>
+  <text x="280" y="375" class="label">Login/Register</text>
+  
+  <!-- Backend Group -->
+  <rect x="450" y="50" width="300" height="400" rx="8" class="backend" opacity="0.3"/>
+  <text x="600" y="80" class="title" fill="#92400e">Backend (Node.js)</text>
+  
+  <rect x="470" y="100" width="120" height="60" rx="6" class="node"/>
+  <text x="530" y="135" class="label">Express Server</text>
+  
+  <rect x="470" y="180" width="120" height="60" rx="6" class="node"/>
+  <text x="530" y="215" class="label">Auth Service</text>
+  
+  <rect x="470" y="260" width="120" height="60" rx="6" class="node"/>
+  <text x="530" y="295" class="label">URL Service</text>
+  
+  <rect x="470" y="340" width="120" height="60" rx="6" class="node"/>
+  <text x="530" y="375" class="label">Click Tracking</text>
+  
+  <rect x="620" y="100" width="120" height="60" rx="6" class="node"/>
+  <text x="680" y="135" class="label">Stats Service</text>
+  
+  <!-- Database Group -->
+  <rect x="200" y="480" width="400" height="100" rx="8" class="database" opacity="0.3"/>
+  <text x="400" y="510" class="title" fill="#065f46">Database</text>
+  
+  <rect x="220" y="520" width="100" height="40" rx="6" class="node"/>
+  <text x="270" y="545" class="label">User Table</text>
+  
+  <rect x="350" y="520" width="100" height="40" rx="6" class="node"/>
+  <text x="400" y="545" class="label">URL Table</text>
+  
+  <rect x="480" y="520" width="100" height="40" rx="6" class="node"/>
+  <text x="530" y="545" class="label">Click Table</text>
+  
+  <!-- Connections -->
+  <path d="M 130 130 L 470 130" class="arrow"/>
+  <path d="M 400 520 L 400 400" class="arrow"/>
+  <path d="M 130 160 L 130 180" class="arrow"/>
+  <path d="M 130 240 L 130 260" class="arrow"/>
+  <path d="M 130 320 L 130 340" class="arrow"/>
+  <path d="M 280 160 L 280 180" class="arrow"/>
+  <path d="M 280 240 L 280 260" class="arrow"/>
+  <path d="M 280 320 L 280 340" class="arrow"/>
+  <path d="M 530 160 L 530 180" class="arrow"/>
+  <path d="M 530 240 L 530 260" class="arrow"/>
+  <path d="M 530 320 L 530 340" class="arrow"/>
+  <path d="M 680 160 L 680 180" class="arrow"/>
+</svg>

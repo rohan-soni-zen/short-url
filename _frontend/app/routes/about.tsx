@@ -1,4 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import {
+	BarChart3,
+	Code2,
+	Database,
+	ExternalLink,
+	Rocket,
+	Shield,
+	Zap,
+} from "lucide-react";
+import { Badge } from "~/components/ui/badge";
 import {
 	Card,
 	CardContent,
@@ -6,300 +15,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
-import { Separator } from "~/components/ui/separator";
-import {
-	ExternalLink,
-	Zap,
-	Shield,
-	BarChart3,
-	Database,
-	Code2,
-	Rocket,
-	Loader2,
-	AlertCircle,
-} from "lucide-react";
-import mermaid from "mermaid";
-
-// Custom styles for Mermaid diagrams
-const mermaidStyles = `
-  .mermaid {
-    font-family: 'Inter', system-ui, sans-serif !important;
-  }
-  
-  .mermaid svg {
-    max-width: 100% !important;
-    height: auto !important;
-  }
-  
-  .mermaid .node rect,
-  .mermaid .node circle,
-  .mermaid .node ellipse,
-  .mermaid .node polygon {
-    stroke-width: 2px !important;
-  }
-  
-  .mermaid .label {
-    font-family: 'Inter', system-ui, sans-serif !important;
-    font-size: 14px !important;
-  }
-  
-  .mermaid .cluster rect {
-    stroke-width: 2px !important;
-    rx: 8px !important;
-  }
-  
-  .mermaid .cluster .label {
-    font-weight: 600 !important;
-  }
-`;
 
 const About = () => {
-	const mermaidRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	const [loadingDiagrams, setLoadingDiagrams] = useState<string[]>([]);
-
-	useEffect(() => {
-		// Inject custom styles
-		const styleElement = document.createElement("style");
-		styleElement.textContent = mermaidStyles;
-		document.head.appendChild(styleElement);
-
-		const loadMermaid = async () => {
-			try {
-				setIsLoading(true);
-				setError(null);
-
-				// Initialize Mermaid
-				mermaid.initialize({
-					startOnLoad: false,
-					theme: "default",
-					securityLevel: "loose",
-					fontFamily: "Inter, system-ui, sans-serif",
-					themeVariables: {
-						primaryColor: "#3b82f6",
-						primaryTextColor: "#1f2937",
-						primaryBorderColor: "#3b82f6",
-						lineColor: "#6b7280",
-						secondaryColor: "#f3f4f6",
-						tertiaryColor: "#e5e7eb",
-					},
-				});
-
-				// Render all diagrams
-				const diagrams = [
-					{
-						id: "architecture",
-						text: `
-graph TB
-    subgraph "Frontend (React)"
-        A[User Browser] --> B[React Router]
-        B --> C[Home Route]
-        B --> D[Stats Route]
-        B --> E[Auth Routes]
-        C --> F[URL Form]
-        D --> G[Charts & Tables]
-        E --> H[Login/Register]
-    end
-    
-    subgraph "Backend (Node.js)"
-        I[Express Server] --> J[Auth Service]
-        I --> K[URL Service]
-        I --> L[Stats Service]
-        I --> M[Click Tracking]
-    end
-    
-    subgraph "Database"
-        N[(TypeORM)]
-        N --> O[User Table]
-        N --> P[URL Table]
-        N --> Q[Click Table]
-    end
-    
-    A --> I
-    I --> N
-						`,
-					},
-					{
-						id: "create-flow",
-						text: `
-sequenceDiagram
-    participant U as User
-    participant F as Frontend
-    participant B as Backend
-    participant D as Database
-    
-    U->>F: Enter long URL + alias
-    F->>F: Validate input
-    F->>B: POST /?longURL&alias
-    Note over B: Add x-user-id/email if authenticated
-    B->>B: Generate/validate alias
-    B->>D: Save URL record
-    D-->>B: URL saved
-    B-->>F: 201 JSON response
-    F->>F: Update recents (localStorage)
-    F->>U: Show success toast
-						`,
-					},
-					{
-						id: "redirect-flow",
-						text: `
-sequenceDiagram
-    participant U as User
-    participant B as Backend
-    participant D as Database
-    
-    U->>B: GET /:alias
-    B->>D: Find URL by alias
-    D-->>B: URL record
-    B->>D: Create Click record
-    D-->>B: Click saved
-    B-->>U: 302 redirect to longURL
-						`,
-					},
-					{
-						id: "auth-flow",
-						text: `
-sequenceDiagram
-    participant U as User
-    participant F as Frontend
-    participant B as Backend
-    participant D as Database
-    
-    U->>F: Click Login/Register
-    F->>F: Open modal
-    U->>F: Enter credentials
-    F->>B: POST /api/auth/login
-    B->>D: Validate user
-    D-->>B: User data
-    B-->>F: Auth response
-    F->>F: Store in AuthContext
-    F->>F: Close modal
-    F->>U: Show success
-						`,
-					},
-					{
-						id: "stats-flow",
-						text: `
-sequenceDiagram
-    participant U as User
-    participant F as Frontend
-    participant B as Backend
-    participant D as Database
-    
-    U->>F: Navigate to /stats
-    F->>B: GET /stats/url/:days
-    F->>B: GET /stats/click/:days
-    F->>B: GET /stats/top/:days/:count
-    
-    B->>D: QueryBuilder aggregations
-    D-->>B: Aggregated data
-    B-->>F: JSON responses
-    
-    F->>F: React Query cache
-    F->>F: Render charts & tables
-    F->>U: Display analytics
-						`,
-					},
-					{
-						id: "database-schema",
-						text: `
-erDiagram
-    User {
-        int id PK
-        string name
-        string email UK
-        string password
-        datetime createdAt
-        datetime updatedAt
-    }
-    
-    URL {
-        int id PK
-        string alias UK
-        string longURL
-        datetime createTime
-        int userId FK
-    }
-    
-    Click {
-        int id PK
-        string alias
-        datetime clickTime
-        int urlId FK
-    }
-    
-    User ||--o{ URL : creates
-    URL ||--o{ Click : receives
-						`,
-					},
-				];
-
-				for (const diagram of diagrams) {
-					try {
-						setLoadingDiagrams(prev => [...prev, diagram.id]);
-
-						if (mermaidRefs.current[diagram.id]) {
-							// Small delay to ensure DOM is ready
-							await new Promise(resolve =>
-								setTimeout(resolve, 100)
-							);
-
-							const { svg } = await mermaid.render(
-								diagram.id,
-								diagram.text
-							);
-							if (mermaidRefs.current[diagram.id]) {
-								mermaidRefs.current[diagram.id]!.innerHTML =
-									svg;
-								// Add mermaid class for styling
-								mermaidRefs.current[diagram.id]!.classList.add(
-									"mermaid"
-								);
-							}
-						}
-
-						setLoadingDiagrams(prev =>
-							prev.filter(id => id !== diagram.id)
-						);
-					} catch (error) {
-						console.error(
-							`Error rendering diagram ${diagram.id}:`,
-							error
-						);
-						// Show error message in the diagram container
-						if (mermaidRefs.current[diagram.id]) {
-							mermaidRefs.current[diagram.id]!.innerHTML = `
-								<div class="text-center text-red-500 p-4">
-									<AlertCircle class="h-8 w-8 mx-auto mb-2" />
-									<p class="text-sm">Failed to load diagram</p>
-								</div>
-							`;
-						}
-						setLoadingDiagrams(prev =>
-							prev.filter(id => id !== diagram.id)
-						);
-					}
-				}
-
-				setIsLoading(false);
-			} catch (err) {
-				setError("Failed to load diagrams. Please refresh the page.");
-				setIsLoading(false);
-				console.error("Mermaid loading error:", err);
-			}
-		};
-
-		// Load diagrams after component mounts
-		loadMermaid();
-
-		// Cleanup styles on unmount
-		return () => {
-			document.head.removeChild(styleElement);
-		};
-	}, []);
-
 	const features = [
 		{
 			icon: Zap,
@@ -360,7 +77,7 @@ erDiagram
 			"JWT",
 		],
 		database: [
-			"MySQL/PostgreSQL",
+			"SQLite",
 			"TypeORM Entities",
 			"Query Builders",
 			"Relationships",
@@ -374,28 +91,6 @@ erDiagram
 			"Static Asset Serving",
 		],
 	};
-
-	if (error) {
-		return (
-			<div className="container mx-auto px-4 py-8 max-w-7xl">
-				<div className="text-center">
-					<AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-					<h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-						Something went wrong
-					</h1>
-					<p className="text-gray-600 dark:text-gray-300 mb-4">
-						{error}
-					</p>
-					<button
-						onClick={() => window.location.reload()}
-						className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-					>
-						Refresh Page
-					</button>
-				</div>
-			</div>
-		);
-	}
 
 	return (
 		<div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -412,19 +107,13 @@ erDiagram
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					{loadingDiagrams.includes("architecture") ? (
-						<div className="flex justify-center items-center h-64">
-							<Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-						</div>
-					) : (
-						<div
-							ref={el => {
-								mermaidRefs.current.architecture = el;
-							}}
-							className="flex justify-center w-full overflow-x-auto"
-							id="architecture"
+					<div className="flex justify-center w-full overflow-x-auto">
+						<img
+							src="/diagrams/architecture.svg"
+							alt="System Architecture Diagram"
+							className="max-w-full h-auto"
 						/>
-					)}
+					</div>
 				</CardContent>
 			</Card>
 
@@ -442,19 +131,13 @@ erDiagram
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						{loadingDiagrams.includes("create-flow") ? (
-							<div className="flex justify-center items-center h-48">
-								<Loader2 className="h-6 w-6 animate-spin text-blue-600" />
-							</div>
-						) : (
-							<div
-								ref={el => {
-									mermaidRefs.current["create-flow"] = el;
-								}}
-								className="flex justify-center w-full overflow-x-auto"
-								id="create-flow"
+						<div className="flex justify-center w-full overflow-x-auto">
+							<img
+								src="/diagrams/create-flow.svg"
+								alt="Create Short URL Flow"
+								className="max-w-full h-auto"
 							/>
-						)}
+						</div>
 					</CardContent>
 				</Card>
 
@@ -469,19 +152,13 @@ erDiagram
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						{loadingDiagrams.includes("redirect-flow") ? (
-							<div className="flex justify-center items-center h-48">
-								<Loader2 className="h-6 w-6 animate-spin text-blue-600" />
-							</div>
-						) : (
-							<div
-								ref={el => {
-									mermaidRefs.current["redirect-flow"] = el;
-								}}
-								className="flex justify-center w-full overflow-x-auto"
-								id="redirect-flow"
+						<div className="flex justify-center w-full overflow-x-auto">
+							<img
+								src="/diagrams/redirect-flow.svg"
+								alt="URL Redirect Flow"
+								className="max-w-full h-auto"
 							/>
-						)}
+						</div>
 					</CardContent>
 				</Card>
 
@@ -496,19 +173,13 @@ erDiagram
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						{loadingDiagrams.includes("auth-flow") ? (
-							<div className="flex justify-center items-center h-48">
-								<Loader2 className="h-6 w-6 animate-spin text-blue-600" />
-							</div>
-						) : (
-							<div
-								ref={el => {
-									mermaidRefs.current["auth-flow"] = el;
-								}}
-								className="flex justify-center w-full overflow-x-auto"
-								id="auth-flow"
+						<div className="flex justify-center w-full overflow-x-auto">
+							<img
+								src="/diagrams/auth-flow.svg"
+								alt="Authentication Flow"
+								className="max-w-full h-auto"
 							/>
-						)}
+						</div>
 					</CardContent>
 				</Card>
 
@@ -523,19 +194,13 @@ erDiagram
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						{loadingDiagrams.includes("stats-flow") ? (
-							<div className="flex justify-center items-center h-48">
-								<Loader2 className="h-6 w-6 animate-spin text-blue-600" />
-							</div>
-						) : (
-							<div
-								ref={el => {
-									mermaidRefs.current["stats-flow"] = el;
-								}}
-								className="flex justify-center w-full overflow-x-auto"
-								id="stats-flow"
+						<div className="flex justify-center w-full overflow-x-auto">
+							<img
+								src="/diagrams/stats-flow.svg"
+								alt="Analytics Flow"
+								className="max-w-full h-auto"
 							/>
-						)}
+						</div>
 					</CardContent>
 				</Card>
 			</div>
@@ -552,19 +217,13 @@ erDiagram
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					{loadingDiagrams.includes("database-schema") ? (
-						<div className="flex justify-center items-center h-64">
-							<Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-						</div>
-					) : (
-						<div
-							ref={el => {
-								mermaidRefs.current["database-schema"] = el;
-							}}
-							className="flex justify-center w-full overflow-x-auto"
-							id="database-schema"
+					<div className="flex justify-center w-full overflow-x-auto">
+						<img
+							src="/diagrams/database-schema.svg"
+							alt="Database Schema"
+							className="max-w-full h-auto"
 						/>
-					)}
+					</div>
 				</CardContent>
 			</Card>
 

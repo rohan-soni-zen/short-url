@@ -140,21 +140,23 @@ app.get(
 			return date.toISOString().split("T")[0];
 		});
 
-		const counts: { date: Date; count: number }[] =
+		const counts: { date: string; count: number }[] =
 			await AppDataSource.getRepository(URL)
 				.createQueryBuilder("url")
-				.select(["DATE(url.createTime) AS date", "COUNT(*) AS count"])
-				.where(
-					"url.createTime >= DATE_SUB(CONVERT_TZ(NOW(), '+00:00', '+05:30'), INTERVAL :days DAY)",
-					{ days }
-				)
-				.groupBy("DATE(url.createTime)")
+				.select([
+					"strftime('%Y-%m-%d', url.createTime) AS date",
+					"COUNT(*) AS count",
+				])
+				.where("url.createTime >= datetime('now', '-:days days')", {
+					days,
+				})
+				.groupBy("strftime('%Y-%m-%d', url.createTime)")
 				.orderBy("date", "DESC")
 				.getRawMany();
 
 		const dataMap = new Map<string, number>();
 		counts.forEach(item => {
-			dataMap.set(item.date.toISOString().split("T")[0], item.count);
+			dataMap.set(item.date, item.count);
 		});
 
 		const result = allDates.map(date => ({
@@ -181,23 +183,23 @@ app.get(
 			return date.toISOString().split("T")[0];
 		});
 
-		const counts: { date: Date; count: number }[] =
+		const counts: { date: string; count: number }[] =
 			await AppDataSource.getRepository(Click)
 				.createQueryBuilder("click")
-				.select(["DATE(click.clickTime) AS date", "COUNT(*) AS count"])
-				.where(
-					"click.clickTime >= DATE_SUB(CONVERT_TZ(NOW(), '+00:00', '+05:30'), INTERVAL :days DAY)",
-					{
-						days,
-					}
-				)
-				.groupBy("DATE(click.clickTime)")
+				.select([
+					"strftime('%Y-%m-%d', click.clickTime) AS date",
+					"COUNT(*) AS count",
+				])
+				.where("click.clickTime >= datetime('now', '-:days days')", {
+					days,
+				})
+				.groupBy("strftime('%Y-%m-%d', click.clickTime)")
 				.orderBy("date", "DESC")
 				.getRawMany();
 
 		const dataMap = new Map<string, number>();
 		counts.forEach(item => {
-			dataMap.set(item.date.toISOString().split("T")[0], item.count);
+			dataMap.set(item.date, item.count);
 		});
 
 		const result = allDates.map(date => ({
@@ -232,10 +234,9 @@ app.get(
 					"user.name AS creatorName",
 					"user.email AS creatorEmail",
 				])
-				.where(
-					"click.clickTime >= DATE_SUB(CONVERT_TZ(NOW(), '+00:00', '+05:30'), INTERVAL :days DAY)",
-					{ days }
-				)
+				.where("click.clickTime >= datetime('now', '-:days days')", {
+					days,
+				})
 				.groupBy("url.alias")
 				.orderBy("clicks", "DESC")
 				.limit(count)

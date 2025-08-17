@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" style="font-family: Inter, system-ui, sans-serif;">
+  <defs>
+    <style>
+      .participant { fill: #f3f4f6; stroke: #6b7280; stroke-width: 2; rx: 8; }
+      .label { font-size: 14px; font-weight: 500; text-anchor: middle; }
+      .arrow { stroke: #6b7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .dashed { stroke-dasharray: 5,5; }
+      .note { fill: #fef3c7; stroke: #f59e0b; stroke-width: 1; rx: 4; }
+      .note-text { font-size: 12px; font-weight: 500; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280" />
+    </marker>
+  </defs>
+  
+  <!-- Participants -->
+  <rect x="50" y="50" width="100" height="60" class="participant"/>
+  <text x="100" y="85" class="label">User</text>
+  
+  <rect x="200" y="50" width="100" height="60" class="participant"/>
+  <text x="250" y="85" class="label">Frontend</text>
+  
+  <rect x="350" y="50" width="100" height="60" class="participant"/>
+  <text x="400" y="85" class="label">Backend</text>
+  
+  <rect x="500" y="50" width="100" height="60" class="participant"/>
+  <text x="550" y="85" class="label">Database</text>
+  
+  <!-- Lifelines -->
+  <line x1="100" y1="110" x2="100" y2="450" stroke="#6b7280" stroke-width="1" opacity="0.5"/>
+  <line x1="250" y1="110" x2="250" y2="450" stroke="#6b7280" stroke-width="1" opacity="0.5"/>
+  <line x1="400" y1="110" x2="400" y2="450" stroke="#6b7280" stroke-width="1" opacity="0.5"/>
+  <line x1="550" y1="110" x2="550" y2="450" stroke="#6b7280" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Messages -->
+  <path d="M 100 140 L 250 140" class="arrow"/>
+  <text x="175" y="135" class="label" fill="#6b7280">Enter long URL + alias</text>
+  
+  <path d="M 250 180 L 250 180" class="arrow"/>
+  <text x="270" y="175" class="label" fill="#6b7280">Validate input</text>
+  
+  <path d="M 250 220 L 400 220" class="arrow"/>
+  <text x="325" y="215" class="label" fill="#6b7280">POST /?longURL&amp;alias</text>
+  
+  <!-- Note -->
+  <rect x="420" y="200" width="200" height="40" class="note"/>
+  <text x="520" y="220" class="note-text" text-anchor="middle">Add x-user-id/email if authenticated</text>
+  
+  <path d="M 400 260 L 400 260" class="arrow"/>
+  <text x="420" y="255" class="label" fill="#6b7280">Generate/validate alias</text>
+  
+  <path d="M 400 300 L 550 300" class="arrow"/>
+  <text x="475" y="295" class="label" fill="#6b7280">Save URL record</text>
+  
+  <path d="M 550 340 L 400 340" class="arrow dashed"/>
+  <text x="475" y="335" class="label" fill="#6b7280">URL saved</text>
+  
+  <path d="M 400 380 L 250 380" class="arrow dashed"/>
+  <text x="325" y="375" class="label" fill="#6b7280">201 JSON response</text>
+  
+  <path d="M 250 420 L 250 420" class="arrow"/>
+  <text x="270" y="415" class="label" fill="#6b7280">Update recents (localStorage)</text>
+  
+  <path d="M 250 460 L 100 460" class="arrow"/>
+  <text x="175" y="455" class="label" fill="#6b7280">Show success toast</text>
+</svg>

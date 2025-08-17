@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" style="font-family: Inter, system-ui, sans-serif;">
+  <defs>
+    <style>
+      .entity { fill: #f3f4f6; stroke: #6b7280; stroke-width: 2; rx: 8; }
+      .title { font-size: 16px; font-weight: 600; text-anchor: middle; }
+      .field { font-size: 12px; font-weight: 500; text-anchor: start; }
+      .pk { font-weight: 700; fill: #dc2626; }
+      .fk { font-weight: 600; fill: #2563eb; }
+      .uk { font-weight: 600; fill: #059669; }
+      .relationship { stroke: #6b7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .cardinality { font-size: 14px; font-weight: 600; text-anchor: middle; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280" />
+    </marker>
+  </defs>
+  
+  <!-- User Entity -->
+  <rect x="50" y="50" width="200" height="200" class="entity"/>
+  <text x="150" y="80" class="title">User</text>
+  <text x="70" y="110" class="field pk">int id PK</text>
+  <text x="70" y="130" class="field">string name</text>
+  <text x="70" y="150" class="field uk">string email UK</text>
+  <text x="70" y="170" class="field">string password</text>
+  <text x="70" y="190" class="field">datetime createdAt</text>
+  <text x="70" y="210" class="field">datetime updatedAt</text>
+  
+  <!-- URL Entity -->
+  <rect x="300" y="50" width="200" height="180" class="entity"/>
+  <text x="400" y="80" class="title">URL</text>
+  <text x="320" y="110" class="field pk">int id PK</text>
+  <text x="320" y="130" class="field uk">string alias UK</text>
+  <text x="320" y="150" class="field">string longURL</text>
+  <text x="320" y="170" class="field">datetime createTime</text>
+  <text x="320" y="190" class="field fk">int userId FK</text>
+  
+  <!-- Click Entity -->
+  <rect x="550" y="50" width="200" height="140" class="entity"/>
+  <text x="650" y="80" class="title">Click</text>
+  <text x="570" y="110" class="field pk">int id PK</text>
+  <text x="570" y="130" class="field">string alias</text>
+  <text x="570" y="150" class="field">datetime clickTime</text>
+  <text x="570" y="170" class="field fk">int urlId FK</text>
+  
+  <!-- Relationships -->
+  <!-- User to URL -->
+  <path d="M 250 150 L 300 150" class="relationship"/>
+  <text x="275" y="145" class="cardinality">1</text>
+  <text x="275" y="165" class="cardinality">N</text>
+  
+  <!-- URL to Click -->
+  <path d="M 500 150 L 550 150" class="relationship"/>
+  <text x="525" y="145" class="cardinality">1</text>
+  <text x="525" y="165" class="cardinality">N</text>
+  
+  <!-- Relationship Labels -->
+  <text x="275" y="180" class="field" text-anchor="middle">creates</text>
+  <text x="525" y="180" class="field" text-anchor="middle">receives</text>
+</svg>
