@@ -17,7 +17,7 @@ spec:
             containers:
                 - name: short-url-backend
                   image: abacus1234/short-url-backend:latest
-                  imagePullPolicy: IfNotPresent
+                  imagePullPolicy: Always
                   ports:
                       - containerPort: 3000
                   env:
