@@ -15,61 +15,6 @@ spec:
                 app: short-url-backend
         spec:
             containers:
-                - name: mysql
-                  image: mysql:latest
-                  imagePullPolicy: IfNotPresent
-                  ports:
-                      - containerPort: 3306
-                  env:
-                      - name: MYSQL_ROOT_PASSWORD
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secret
-                                key: password
-                      - name: MYSQL_DATABASE
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secret
-                                key: database
-                      - name: MYSQL_USER
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secret
-                                key: username
-                      - name: MYSQL_PASSWORD
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secret
-                                key: password
-                  resources:
-                      requests:
-                          memory: "256Mi"
-                          cpu: "100m"
-                      limits:
-                          memory: "512Mi"
-                          cpu: "500m"
-                  startupProbe:
-                      tcpSocket:
-                          port: 3306
-                      initialDelaySeconds: 5
-                      periodSeconds: 10
-                      failureThreshold: 30
-                      timeoutSeconds: 5
-                  readinessProbe:
-                      tcpSocket:
-                          port: 3306
-                      initialDelaySeconds: 5
-                      periodSeconds: 5
-                      timeoutSeconds: 3
-                  livenessProbe:
-                      tcpSocket:
-                          port: 3306
-                      initialDelaySeconds: 30
-                      periodSeconds: 10
-                      timeoutSeconds: 5
-                  volumeMounts:
-                      - name: mysql-data
-                        mountPath: /var/lib/mysql
                 - name: short-url-backend
                   image: abacus1234/short-url-backend:latest
                   imagePullPolicy: IfNotPresent
@@ -80,25 +25,6 @@ spec:
                         value: "production"
                       - name: PORT
                         value: "3000"
-                      - name: DB_HOST
-                        value: "localhost"
-                      - name: DB_PORT
-                        value: "3306"
-                      - name: DB_USERNAME
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secret
-                                key: username
-                      - name: DB_PASSWORD
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secret
-                                key: password
-                      - name: DB_DATABASE
-                        valueFrom:
-                            secretKeyRef:
-                                name: db-secret
-                                key: database
                   resources:
                       requests:
                           memory: "128Mi"
@@ -128,9 +54,6 @@ spec:
                       initialDelaySeconds: 65
                       periodSeconds: 5
                       timeoutSeconds: 5
-            volumes:
-                - name: mysql-data
-                  emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
@@ -145,15 +68,3 @@ spec:
           targetPort: 3000
           nodePort: 30080
     type: NodePort
----
-apiVersion: v1
-kind: Secret
-metadata:
-    name: db-secret
-type: Opaque
-data:
-    host: bG9jYWxob3N0
-    port: MzMwNg==
-    username: dGVzdA==
-    password: dGVzdA==
-    database: dGVzdA==
