@@ -1,16 +1,9 @@
-FROM node:18-slim
+FROM node:24-slim 
 
-WORKDIR /app
-
-# Copy backend package files
-COPY package*.json ./
-RUN npm ci --only=production
-
-# Copy backend source code
 COPY . .
 
-# Expose port
+RUN npm ci --omit=dev
+
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"] 
+CMD ["npm", "start"]
